@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package calculator;
+
+message FactorRequest {
+  int32 number_to_factor = 1;
+}
+
+message FactorResponse {
+  int32 number = 1;
+}
