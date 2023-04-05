@@ -21,13 +21,27 @@ async function doGreet(client) {
   })
 }
 
+async function doGreetManyTimes(client) {
+  const request = new GreetRequest()
+  request.setFirstName('Guilherme')
+
+  const stream = client.greetManyTimes(request)
+
+  const data = []
+  for await (const response of stream) {
+    data.push(response.getGreetings())
+  }
+
+  return data
+}
+
 async function main() {
   const credentails = grpc.ChannelCredentials.createInsecure()
   const client = new GreetServiceClient('localhost:50051', credentails)
 
-  const greetResponse = await doGreet(client)
+  const greetResponse = await doGreetManyTimes(client)
   console.log(
-    `[Greet]: `, greetResponse.getGreetings()
+    `[Greet]: `, greetResponse
   )
   client.close();
 }

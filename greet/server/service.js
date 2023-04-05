@@ -9,3 +9,16 @@ exports.greet = function (call, callback) {
 
   callback(null, response)
 }
+
+exports.greetManyTimes = (call, _) => {
+  console.log('GreetManyTimes was invoked')
+  const { request } = call
+  const res = new protobuffer.GreetResponse()
+
+  for (let i = 0; i < 10; i++) {
+    res.setGreetings(`Hello ${request.getFirstName()}! - ${i+1}`)
+    call.write(res)
+  }
+
+  call.end()
+}
