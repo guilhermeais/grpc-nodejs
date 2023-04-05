@@ -1,0 +1,20 @@
+{
+  "name": "grpc-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "pb:gen": "./scripts/gen.sh greet",
+    "pb:win:gen": "powershell -ExecutionPolicy unrestricted ./scripts/gen.ps1 greet"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.8.13",
+    "google-protobuf": "^3.21.2"
+  },
+  "devDependencies": {
+    "grpc-tools": "^1.12.4"
+  }
+}

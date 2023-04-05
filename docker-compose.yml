@@ -1,0 +1,13 @@
+version: '3'
+services:
+  node-grpc:
+    image: node-grpc
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run pb:gen 
