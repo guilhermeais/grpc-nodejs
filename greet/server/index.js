@@ -1,4 +1,6 @@
 const grpc = require('@grpc/grpc-js')
+const service = require('./service')
+const { GreetServiceService } = require('../proto/greet_grpc_pb')
 
 const address = 'localhost:50051'
 
@@ -23,6 +25,8 @@ function main() {
     cleanup(grpcServer)
   })
 
+  grpcServer.addService(GreetServiceService, service)
+
   grpcServer.bindAsync(address, credentials, (err, _) => {
     if (err) {
       console.error(err)
@@ -36,4 +40,4 @@ function main() {
   console.log(`Listening on ${address}`)
 }
 
-main();
+main()
