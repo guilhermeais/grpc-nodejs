@@ -16,9 +16,25 @@ exports.greetManyTimes = (call, _) => {
   const res = new protobuffer.GreetResponse()
 
   for (let i = 0; i < 10; i++) {
-    res.setGreetings(`Hello ${request.getFirstName()}! - ${i+1}`)
+    res.setGreetings(`Hello ${request.getFirstName()}! - ${i + 1}`)
     call.write(res)
   }
 
   call.end()
+}
+
+exports.longGreet = async (call, callback) => {
+  console.log('LongGreet was invoked')
+  const names =  []
+  for await (const greetRequest of call) {
+    names.push(greetRequest.getFirstName())
+  }
+
+  const greeting = `Hello ${names.join(', ')}! :D`
+
+  console.log(greeting)
+  callback(
+    null,
+    new protobuffer.GreetResponse().setGreetings(greeting)
+  )
 }
