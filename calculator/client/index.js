@@ -2,7 +2,7 @@ const grpc = require('@grpc/grpc-js')
 const { CalculatorClient } = require('../proto/calculator_grpc_pb')
 const { SumRequest } = require('../proto/sum_pb')
 const { FactorRequest } = require('../proto/factor_pb')
-
+const { AvgRequest } = require('../proto/avg_pb')
 
 /**
  *
@@ -39,6 +39,24 @@ async function getFactors(client, { numberToFactor }) {
   return factors
 }
 
+function getAvg(client) {
+  const numbers = [1, 2, 3, 4]
+
+  return new Promise((resolve, reject) => {
+    const writable = client.getAvg((err, response) => {
+      if (err) {
+        return reject(err)
+      }
+
+      resolve(response.getNumber())
+    })
+
+    numbers.map(number => writable.write(new AvgRequest().setNumber(number)))
+
+    writable.end()
+  })
+}
+
 async function main() {
   const credentails = grpc.ChannelCredentials.createInsecure()
   const client = new CalculatorClient('localhost:50051', credentails)
@@ -54,6 +72,10 @@ async function main() {
   })
 
   console.log(`[Factors]: `, factors)
+
+  const avgResponse = await getAvg(client)
+
+  console.log(`[Avg]: `, avgResponse)
 
   client.close()
 }
