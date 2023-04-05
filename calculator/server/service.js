@@ -1,4 +1,4 @@
-const protobuffer = require('../proto/calculator_pb')
+const protobuffer = require('../proto/sum_pb')
 
 exports.sum = function (call, callback) {
   console.log('Sum was invoked')

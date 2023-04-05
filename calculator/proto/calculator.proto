@@ -2,14 +2,7 @@ syntax = "proto3";
 
 package calculator;
 
-message SumRequest {
-  int32 first_number = 1;
-  int32 second_number = 2;
-}
-
-message SumResponse {
-  int32 result = 1;
-}
+import "sum.proto";
 
 service Calculator {
   rpc Sum (SumRequest) returns (SumResponse) {}

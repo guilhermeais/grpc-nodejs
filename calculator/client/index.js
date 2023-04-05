@@ -1,6 +1,6 @@
 const grpc = require('@grpc/grpc-js')
 const { CalculatorClient } = require('../proto/calculator_grpc_pb')
-const { SumRequest } = require('../proto/calculator_pb')
+const { SumRequest } = require('../proto/sum_pb')
 
 /**
  *
