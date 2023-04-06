@@ -1,4 +1,5 @@
 const protobuffer = require('../proto/greet_pb')
+const { setTimeout } = require('timers/promises')
 
 exports.greet = function (call, callback) {
   console.log('Greet was invoked')
@@ -46,4 +47,22 @@ exports.greetEveryone = async call => {
 
   console.log('GreetEveryone was finished')
   call.end()
+}
+
+exports.greetWithDeadline = async (call, callback) => {
+  console.log('GreetWithDeadline was invoked')
+ for (let i = 0; i < 3; i++) {
+    if (call.cancelled) {
+      console.log('Call was cancelled')
+      return
+    }
+    console.log(`Waiting... ${i + 1}`)
+    await setTimeout(1000)
+ }
+
+  const res = new protobuffer.GreetResponse().setGreetings(
+    `Hello ${call.request.getFirstName()}!`
+  )
+
+  callback(null, res)
 }

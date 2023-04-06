@@ -67,6 +67,26 @@ function doGreetEveryone(client) {
   stream.end()
 }
 
+async function doGreetWithDeadline(client, deadlineTimeMs) {
+  const request = new GreetRequest()
+  request.setFirstName('Guilherme')
+
+  return new Promise((resolve, reject) => {
+    const deadlineTime = Date.now() + deadlineTimeMs
+    client.greetWithDeadline(
+      request,
+      { deadline: deadlineTime },
+      (err, response) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(response.getGreetings())
+        }
+      }
+    )
+  })
+}
+
 async function main() {
   const credentails = grpc.ChannelCredentials.createInsecure()
   const client = new GreetServiceClient('localhost:50051', credentails)
@@ -78,10 +98,13 @@ async function main() {
 
   // console.log(`[LongGreet]: `, longGreetResponse)
 
-  const greetEveryoneResponse = doGreetEveryone(client)
+  // const greetEveryoneResponse = doGreetEveryone(client)
 
-  console.log(`[GreetEveryone]: `, greetEveryoneResponse)
+  // console.log(`[GreetEveryone]: `, greetEveryoneResponse)
 
+  const greetWithDeadlineResponse = await doGreetWithDeadline(client, 1000)
+
+  console.log(`[GreetWithDeadline]: `, greetWithDeadlineResponse)
   client.close()
 }
 
