@@ -55,6 +55,18 @@ async function doLongGreet(client) {
   })
 }
 
+function doGreetEveryone(client) {
+  const names = ['Guilherme', 'Pedro', 'Maria', 'João', 'Ana']
+
+  const stream = client.greetEveryone()
+  stream.on('data', response => {
+    console.log(`[GreetEveryone]: `, response.getGreetings())
+  })
+
+  names.forEach(name => stream.write(new GreetRequest().setFirstName(name)))
+  stream.end()
+}
+
 async function main() {
   const credentails = grpc.ChannelCredentials.createInsecure()
   const client = new GreetServiceClient('localhost:50051', credentails)
@@ -62,9 +74,14 @@ async function main() {
   // const greetResponse = await doGreetManyTimes(client)
   // console.log(`[Greet]: `, greetResponse)
 
-  const longGreetResponse = await doLongGreet(client)
+  // const longGreetResponse = await doLongGreet(client)
 
-  console.log(`[LongGreet]: `, longGreetResponse)
+  // console.log(`[LongGreet]: `, longGreetResponse)
+
+  const greetEveryoneResponse = doGreetEveryone(client)
+
+  console.log(`[GreetEveryone]: `, greetEveryoneResponse)
+
   client.close()
 }
 

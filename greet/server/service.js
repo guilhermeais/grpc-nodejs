@@ -25,7 +25,7 @@ exports.greetManyTimes = (call, _) => {
 
 exports.longGreet = async (call, callback) => {
   console.log('LongGreet was invoked')
-  const names =  []
+  const names = []
   for await (const greetRequest of call) {
     names.push(greetRequest.getFirstName())
   }
@@ -33,8 +33,17 @@ exports.longGreet = async (call, callback) => {
   const greeting = `Hello ${names.join(', ')}! :D`
 
   console.log(greeting)
-  callback(
-    null,
-    new protobuffer.GreetResponse().setGreetings(greeting)
-  )
+  callback(null, new protobuffer.GreetResponse().setGreetings(greeting))
+}
+
+exports.greetEveryone = async call => {
+  console.log('GreetEveryone was invoked')
+  for await (const greetRequest of call) {
+    const greting = `Hello, ${greetRequest.getFirstName()}!`
+    console.log(greting)
+    call.write(new protobuffer.GreetResponse().setGreetings(greting))
+  }
+
+  console.log('GreetEveryone was finished')
+  call.end()
 }

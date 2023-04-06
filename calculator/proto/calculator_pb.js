@@ -27,3 +27,5 @@ var factor_pb = require('./factor_pb.js');
 goog.object.extend(proto, factor_pb);
 var avg_pb = require('./avg_pb.js');
 goog.object.extend(proto, avg_pb);
+var max_pb = require('./max_pb.js');
+goog.object.extend(proto, max_pb);
