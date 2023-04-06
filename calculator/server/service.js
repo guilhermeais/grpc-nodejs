@@ -1,4 +1,5 @@
 const { SumResponse } = require('../proto/sum_pb')
+const { AvgResponse } = require('../proto/avg_pb')
 const { FactorResponse } = require('../proto/factor_pb')
 
 exports.sum = function (call, callback) {
@@ -39,4 +40,18 @@ exports.getFactors = function (call) {
   }
 
   call.end()
+}
+
+exports.getAvg = async function (call, callback) {
+  console.log('GetAvg was invoked')
+
+  let total = 0
+  let count = 0
+
+  for await (const number of call) {
+    count++
+    total += parseInt(number?.getNumber() || 0)
+  }
+
+  callback(null, new AvgResponse().setNumber(total / count))
 }
