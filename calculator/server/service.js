@@ -1,6 +1,7 @@
 const { SumResponse } = require('../proto/sum_pb')
 const { AvgResponse } = require('../proto/avg_pb')
 const { FactorResponse } = require('../proto/factor_pb')
+const { MaxResponse } = require('../proto/max_pb')
 
 exports.sum = function (call, callback) {
   console.log('Sum was invoked')
@@ -42,7 +43,7 @@ exports.getFactors = function (call) {
   call.end()
 }
 
-exports.getAvg = async function (call, callback) {
+exports.getAvg =  async function (call, callback) {
   console.log('GetAvg was invoked')
 
   let total = 0
@@ -54,4 +55,26 @@ exports.getAvg = async function (call, callback) {
   }
 
   callback(null, new AvgResponse().setNumber(total / count))
+}
+
+exports.getMax = function (call) {
+  console.log('GetMax was invoked')
+
+  let max = 0
+
+  call.on('data', (request) => {
+    const number = parseInt(request?.getNumber() || 0)
+
+    if (number > max) {
+      max = number
+    }
+
+    call.write(
+      new MaxResponse().setNumber(max)
+    )
+  })
+
+  call.on('end', () => {
+    call.end()
+  })
 }

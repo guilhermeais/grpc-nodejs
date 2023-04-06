@@ -3,6 +3,7 @@ const { CalculatorClient } = require('../proto/calculator_grpc_pb')
 const { SumRequest } = require('../proto/sum_pb')
 const { FactorRequest } = require('../proto/factor_pb')
 const { AvgRequest } = require('../proto/avg_pb')
+const { MaxRequest } = require('../proto/max_pb')
 
 /**
  *
@@ -57,26 +58,56 @@ function getAvg(client) {
   })
 }
 
+async function getMax(client) {
+  const numbers = [1, 5, 3, 6, 2, 20]
+
+  return new Promise((resolve, reject) => {
+    const duplex = client.getMax()
+
+    let max = 0
+    duplex.on('data', res => {
+      const actualNumber = res.getNumber()
+      if (max !== actualNumber) {
+        console.log(`max number changed: ${actualNumber}`)
+      }
+      max = res.getNumber()
+    })
+
+    duplex.on('end', () => {
+      resolve(max)
+    })
+
+    numbers.map(number => {
+      console.log(`sending number: ${number}`)
+      duplex.write(new MaxRequest().setNumber(number))
+    })
+
+    duplex.end()
+  })
+}
+
 async function main() {
   const credentails = grpc.ChannelCredentials.createInsecure()
   const client = new CalculatorClient('localhost:50051', credentails)
 
-  const sumResponse = await sum(client, {
-    firstNumber: 10,
-    secondNumber: 2000,
-  })
-  console.log(`[Sum]: `, sumResponse.getResult())
+  // const sumResponse = await sum(client, {
+  //   firstNumber: 10,
+  //   secondNumber: 2000,
+  // })
+  // console.log(`[Sum]: `, sumResponse.getResult())
 
-  const factors = await getFactors(client, {
-    numberToFactor: 100,
-  })
+  // const factors = await getFactors(client, {
+  //   numberToFactor: 100,
+  // })
 
-  console.log(`[Factors]: `, factors)
+  // console.log(`[Factors]: `, factors)
 
-  const avgResponse = await getAvg(client)
+  // const avgResponse = await getAvg(client)
 
-  console.log(`[Avg]: `, avgResponse)
+  // console.log(`[Avg]: `, avgResponse)
 
+  const max = await getMax(client)
+  console.log(`[Max]: `, max)
   client.close()
 }
 
