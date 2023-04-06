@@ -2,6 +2,9 @@ const { SumResponse } = require('../proto/sum_pb')
 const { AvgResponse } = require('../proto/avg_pb')
 const { FactorResponse } = require('../proto/factor_pb')
 const { MaxResponse } = require('../proto/max_pb')
+const { SqrtResponse } = require('../proto/sqrt_pb')
+
+const grpc = require('@grpc/grpc-js')
 
 exports.sum = function (call, callback) {
   console.log('Sum was invoked')
@@ -43,7 +46,7 @@ exports.getFactors = function (call) {
   call.end()
 }
 
-exports.getAvg =  async function (call, callback) {
+exports.getAvg = async function (call, callback) {
   console.log('GetAvg was invoked')
 
   let total = 0
@@ -62,19 +65,36 @@ exports.getMax = function (call) {
 
   let max = 0
 
-  call.on('data', (request) => {
+  call.on('data', request => {
     const number = parseInt(request?.getNumber() || 0)
 
     if (number > max) {
       max = number
     }
 
-    call.write(
-      new MaxResponse().setNumber(max)
-    )
+    call.write(new MaxResponse().setNumber(max))
   })
 
   call.on('end', () => {
     call.end()
   })
+}
+
+exports.getSqrt = function (call, callback) {
+  console.log('GetSqrt was invoked')
+
+  const { request } = call
+  const number = request.getNumber() || 0
+
+  if (number < 0) {
+    callback({
+      code: grpc.status.INVALID_ARGUMENT,
+      message: `Number must be positive, received: ${number}`,
+    })
+    return
+  }
+
+  const response = new SqrtResponse().setResult(Math.sqrt(number))
+
+  callback(null, response)
 }

@@ -4,6 +4,7 @@ const { SumRequest } = require('../proto/sum_pb')
 const { FactorRequest } = require('../proto/factor_pb')
 const { AvgRequest } = require('../proto/avg_pb')
 const { MaxRequest } = require('../proto/max_pb')
+const { SqrtRequest } = require('../proto/sqrt_pb')
 
 /**
  *
@@ -86,6 +87,20 @@ async function getMax(client) {
   })
 }
 
+async function getSqrt(client, number) {
+  const request = new SqrtRequest().setNumber(number)
+
+  return new Promise((resolve, reject) => {
+    client.getSqrt(request, (err, response) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(response.getResult())
+      }
+    })
+  })
+}
+
 async function main() {
   const credentails = grpc.ChannelCredentials.createInsecure()
   const client = new CalculatorClient('localhost:50051', credentails)
@@ -106,8 +121,18 @@ async function main() {
 
   // console.log(`[Avg]: `, avgResponse)
 
-  const max = await getMax(client)
-  console.log(`[Max]: `, max)
+  // const max = await getMax(client)
+  // console.log(`[Max]: `, max)
+  try {
+    await getSqrt(client, -100)
+  } catch (error) {
+    console.log(error)
+  }
+
+  const sqrtResponse = await getSqrt(client, 100)
+
+  console.log(`[Sqrt]: `, sqrtResponse)
+
   client.close()
 }
 
