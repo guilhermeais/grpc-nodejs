@@ -1,5 +1,5 @@
 const grpc = require('@grpc/grpc-js')
-const { BlogService } = require('../proto/blog_grpc_pb')
+const { BlogServiceService } = require('../proto/blog_grpc_pb')
 const service = require('./service')
 const { mongoClient } = require('./mongo')
 
@@ -18,6 +18,8 @@ async function cleanup(server) {
 
 function createServer() {
   const grpcServer = new grpc.Server()
+
+  grpcServer.addService(BlogServiceService, service)
 
   process.on('SIGINT', () => {
     console.log('Caught interrupt signal')

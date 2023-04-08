@@ -19,9 +19,8 @@ async function main() {
     }
 
     server.start()
+    console.log(`Listening on ${address}`)
   })
-
-  console.log(`Listening on ${address}`)
 }
 
 process.on('uncaughtException', function (err) {

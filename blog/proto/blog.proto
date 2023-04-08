@@ -1,24 +1,24 @@
 syntax = "proto3";
 
-package blog;
+package post;
 
 import "google/protobuf/empty.proto";
 
-message Blog {
+message Post {
   string id = 1;
   string author_name = 2;
   string title = 3;
   string content = 4;
 }
 
-message BlogId {
+message PostId {
   string id = 1;
 }
 
 service BlogService {
-  rpc CreateBlog (Blog) returns (BlogId);
-  rpc ReadBlog (BlogId) returns (Blog);
-  rpc UpdateBlog (Blog) returns (google.protobuf.Empty);
-  rpc DeleteBlog (BlogId) returns (google.protobuf.Empty);
-  rpc ListAllBlog (google.protobuf.Emtpy) returns (stream Blog);
+  rpc CreatePost (Post) returns (PostId);
+  rpc ReadPost (PostId) returns (Post);
+  rpc UpdatePost (Post) returns (google.protobuf.Empty);
+  rpc DeletePost (PostId) returns (google.protobuf.Empty);
+  rpc ListAllPost (google.protobuf.Empty) returns (stream Post);
 }
