@@ -11,6 +11,7 @@ module.exports = class PostGRPCAdaptar {
 
   static toGRPCPost (post) {
     return new PostGRPC()
+      .setId(post._id.toString())
       .setAuthorName(post.authorName)
       .setContent(post.content)
       .setTitle(post.title)
